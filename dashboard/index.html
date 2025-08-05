@@ -815,7 +815,7 @@
         avatar.innerHTML = initials;
 
         document.getElementById('logoutBtn').addEventListener('click', function () {
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 退出中...';
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
             this.disabled = true;
             setTimeout(() => {
                 window.location.href = '../login.html';
