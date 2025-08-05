@@ -1,0 +1,506 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mbilse Care - Sign up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', monospace, sans-serif;
+        }
+
+        :root {
+            --primary: #0071e3;
+            --primary-hover: #0077ed;
+            --secondary: #f5f5f7;
+            --dark: #1d1d1f;
+            --light: #f5f5f7;
+            --gray: #86868b;
+            --light-gray: #d2d2d7;
+            --card-bg: rgba(255, 255, 255, 0.62);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background-size: 400% 400%;
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            
+            animation: gradientBG 15s ease infinite;
+        }
+
+        /* 粒子背景容器 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* 登录卡片 */
+        .login-card {
+            background: var(--card-bg);
+            border-radius: 18px;
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeIn 0.6s ease-out, cardFloat 8s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #0071e3, #00c9ff);
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 40px;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo p {
+            color: var(--gray);
+            font-size: 15px;
+            margin-top: 5px;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 1px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            background: white;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 113, 227, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: var(--gray);
+            opacity: 0.7;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 113, 227, 0.2);
+        }
+
+        /* 分隔线 */
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--light-gray);
+        }
+
+        .divider span {
+            padding: 0 15px;
+            color: var(--gray);
+            font-size: 13px;
+        }
+
+        /* 第三方登录按钮 */
+        .btn-oauth {
+            background: white;
+            color: var(--dark);
+            border: 1px solid var(--light-gray);
+            margin-bottom: 15px;
+        }
+
+        .btn-oauth:hover {
+            background: #f9f9f9;
+            border-color: var(--gray);
+            transform: translateY(-2px);
+        }
+
+        .btn-oauth i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+
+        .btn-github i {
+            color: #333;
+        }
+
+        .btn-google i {
+            color: #4285F4;
+        }
+
+        .btn-website i {
+            color: #0071e3;
+        }
+
+        /* 链接 */
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 25px;
+        }
+
+        .links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+            color: var(--primary-hover);
+        }
+
+        /* 动画 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cardFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* 响应式 */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+            
+            .form-control {
+                padding: 13px;
+            }
+            
+            .btn {
+                padding: 13px;
+            }
+            
+            .links {
+                flex-direction: column;
+                gap: 12px;
+            }
+        }
+
+        /* 微妙的输入动画 */
+        .form-group {
+            animation: inputAppear 0.5s ease-out;
+            animation-fill-mode: backwards;
+        }
+        
+        .form-group:nth-child(1) { animation-delay: 0.1s; }
+        .form-group:nth-child(2) { animation-delay: 0.2s; }
+        .btn-primary { animation-delay: 0.3s; }
+        .divider { animation-delay: 0.4s; }
+        .btn-oauth:nth-child(1) { animation-delay: 0.5s; }
+        .btn-oauth:nth-child(2) { animation-delay: 0.6s; }
+        .btn-oauth:nth-child(3) { animation-delay: 0.7s; }
+        .links { animation-delay: 0.8s; }
+        
+        @keyframes inputAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* 粒子效果覆盖样式 */
+        .particles-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    
+    <!-- 登录卡片 -->
+    <div class="login-card">
+        <div class="logo">
+            <i class="fas fa-cloud"></i>
+            <h1>Sign up</h1>
+            <p>Please create your Mbilse Care account</p>
+        </div>
+        
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="username">Create an username</label>
+                <input type="text" id="username" class="form-control" placeholder="Create an username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Create a password</label>
+                <input type="password" id="password" class="form-control" placeholder="Create a password" required>
+            </div>
+      <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your Email" required>
+            </div>
+      <div class="form-group">
+                <label for="code">Get the code</label>
+                <input type="text" id="code" class="form-control" placeholder="Enter the code" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                Log in
+            </button>
+        </form>
+        
+        <div class="divider">
+            <span>OR</span>
+        </div>
+        
+        <button class="btn btn-oauth btn-github">
+            <i class="fab fa-github" onclick="window.location.href='https://github.com/login/oauth/authorize?client_id=Ov23liYpNW2NxLVpe7V9'"></i>
+            <span onclick="window.location.href='https://github.com/login/oauth/authorize?client_id=Ov23liYpNW2NxLVpe7V9'">Sign up with Github</span>
+        </button>
+        
+        <button class="btn btn-oauth btn-website" onclick="window.location.href='https://mbilse.github.io'">
+            <i class="fas fa-external-link-alt"></i>
+            <span>Sign up with MWeb</span>
+        </button>
+        
+        <button class="btn btn-oauth btn-google" onclick="location.href = 
+      'https://accounts.google.com/o/oauth2/v2/auth?' +
+      'client_id=1060318817276-ukunvndjngt6iq57ql1pd7e3p001r9cq.apps.googleusercontent.com' +
+      '&redirect_uri=' + encodeURIComponent('https://mbilse001.github.io/dashboard') +
+      '&response_type=token' +
+      '&scope=' + encodeURIComponent('openid email profile') +
+      '&state=' + Math.random().toString(36).substring(2);">
+            <i class="fab fa-google"></i>
+            <span>Sign up with Google</span>
+        </button>
+        
+        <div class="links">
+            
+            <a href="login.html">Have an account? Log in</a>
+        </div>
+    </div>
+    
+    <!-- 粒子背景脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 粒子背景配置
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#ffffff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#ffffff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // 表单提交处理
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 显示登录中状态
+            const btn = document.querySelector('.btn-primary');
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
+            btn.disabled = true;
+            
+            // 模拟登录过程
+            setTimeout(() => {
+                // 登录成功后跳转到dashboard
+                window.location.href = '/dashboard/?username=dashuser';
+            }, 1500);
+        });
+        
+        // 为第三方登录按钮添加点击效果
+        const oauthButtons = document.querySelectorAll('.btn-oauth');
+        oauthButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const originalText = this.innerHTML;
+                this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Redirecting...';
+                this.disabled = true;
+                
+                
+                
+                // 恢复按钮状态
+                setTimeout(() => {
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                }, 2000);
+            });
+        });
+    </script>
+</body>
+</html>
