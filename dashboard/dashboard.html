@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <title>Mbilse Care - 用户仪表盘</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #00c9ff;
+            --secondary: #3a86ff;
+            --accent: #ff006e;
+            --dark: #0d1117;
+            --darker: #090c10;
+            --light: #f0f6fc;
+            --gray: #8b949e;
+            --card-bg: rgba(13, 17, 23, 0.8);
+            --success: #00c853;
+            --warning: #ffab00;
+            --danger: #ff1744;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 粒子背景 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* 导航栏 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 201, 255, 0.4);
+        }
+
+        /* 主内容区域 */
+        .dashboard {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            color: white;
+        }
+
+        .user-details h2 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: var(--light);
+        }
+
+        .user-details p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+
+        .login-method {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 30px;
+            font-size: 0.9rem;
+            width: fit-content;
+        }
+
+        .login-method.github {
+            color: #333;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .login-method.google {
+            color: #4285F4;
+            background: rgba(255, 255, 255, 0.9);
+        }
+
+        .login-method.email {
+            color: var(--primary);
+            background: rgba(0, 201, 255, 0.1);
+        }
+
+        /* 卡片网格 */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 201, 255, 0.3);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .card-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: rgba(0, 201, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 10px 0;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* 项目列表 */
+        .projects-section {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 25px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 2px;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 201, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .project-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .project-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(0, 201, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .project-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--light);
+        }
+
+        .project-desc {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        .project-stats {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        .stat-item i {
+            color: var(--primary);
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+            font-size: 0.95rem;
+            margin-top: 15px;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: var(--dark);
+        }
+
+        .primary-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 201, 255, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+            }
+            
+            .user-info {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .user-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .user-avatar {
+                width: 70px;
+                height: 70px;
+                font-size: 2rem;
+            }
+            
+            .stat-number {
+                font-size: 2rem;
+            }
+        }
+        
+        /* 验证信息样式 */
+        .auth-info {
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        .auth-info strong {
+            color: var(--light);
+            font-weight: 500;
+        }
+        
+        .auth-info .code {
+            display: inline-block;
+            padding: 3px 8px;
+            background: rgba(0, 201, 255, 0.1);
+            border-radius: 4px;
+            color: var(--primary);
+            margin: 0 5px;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cloud"></i>
+            <span>Mbilse Care</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#"><i class="fas fa-home"></i> </a>
+            <a href="#"><i class="fas fa-project-diagram"></i> </a>
+            <a href="#"><i class="fas fa-cog"></i> </a>
+            <button class="nav-btn" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> </button>
+        </div>
+    </nav>
+    
+    <!-- 仪表盘内容 -->
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <h2 id="username">User_10785836</h2>
+                    <p>Normal User</p>
+                    <div class="login-method email" id="loginMethod">
+                        <i class="fas fa-envelope"></i>
+                        <span>邮箱登录</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="auth-info" id="authInfo">
+                <p>此页面仅允许通过验证的用户访问</p>
+            </div>
+        </div>
+        
+        <!-- 卡片网格 -->
+        <div class="dashboard-grid">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">CPU 使用率</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                </div>
+                <div class="stat-number">24%</div>
+                <div class="stat-label">当前使用率</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 24%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">内存使用</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-memory"></i>
+                    </div>
+                </div>
+                <div class="stat-number">1.2 GB / 4 GB</div>
+                <div class="stat-label">已使用 30%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 30%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">存储空间</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-hdd"></i>
+                    </div>
+                </div>
+                <div class="stat-number">50 GB / 200 GB</div>
+                <div class="stat-label">已使用 25%</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 25%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>0%</span>
+                    <span>100%</span>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">网络流量</h3>
+                    <div class="card-icon">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                </div>
+                <div class="stat-number">1.2 TB</div>
+                <div class="stat-label">本月已使用</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 60%"></div>
+                </div>
+                <div class="progress-info">
+                    <span>0 TB</span>
+                    <span>2 TB</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 项目部分 -->
+        <div class="projects-section">
+            <h2 class="section-title">我的项目</h2>
+            
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3 class="project-title">企业官网</h3>
+                    </div>
+                    <p class="project-desc">公司官方网站，使用React和Node.js构建，部署在Mbilse Care平台上。</p>
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span>12 提交</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>运行中</span>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn">管理项目</button>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <h3 class="project-title">电商平台</h3>
+                    </div>
+                    <p class="project-desc">基于Vue.js和Express的电子商务平台，支持多种支付方式。</p>
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span>24 提交</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>运行中</span>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn">管理项目</button>
+                </div>
+                
+                <div class="project-card">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="project-title">移动应用API</h3>
+                    </div>
+                    <p class="project-desc">为移动应用提供后端服务的API接口，使用Python Flask开发。</p>
+                    <div class="project-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-code-branch"></i>
+                            <span>8 提交</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span>需要更新</span>
+                        </div>
+                    </div>
+                    <button class="btn primary-btn">管理项目</button>
+                </div>
+            </div>
+            <button class="btn primary-btn" id="addProjectBtn" style="margin-top: 30px;"><i class="fas fa-plus"></i> 添加项目</button>
+
+<div id="newProjectForm" style="display:none; margin-top: 20px;">
+    <input type="text" id="projectTitle" placeholder="项目名称" class="btn" style="width: 100%; margin-bottom: 10px;">
+    <input type="text" id="projectDesc" placeholder="项目描述" class="btn" style="width: 100%; margin-bottom: 10px;">
+    <select id="projectStatus" class="btn" style="width: 100%; margin-bottom: 10px;">
+        <option value="运行中">运行中</option>
+        <option value="需要更新">需要更新</option>
+    </select>
+    <button class="btn primary-btn" onclick="addProject()">确认添加</button>
+</div>
+        </div>
+    </div>
+    
+    <!-- 粒子背景脚本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 粒子背景配置
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#00c9ff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00c9ff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // 生成 8 位随机数字
+    function generateRandomID(length = 8) {
+        return Math.floor(Math.random() * Math.pow(10, length)).toString().padStart(length, '0');
+    }
+
+    // 获取 URL 参数
+    function getUrlParams() {
+        const params = {};
+        const queryString = window.location.search.substring(1);
+        const regex = /([^&=]+)=([^&]*)/g;
+        let match;
+        while ((match = regex.exec(queryString))) {
+            params[decodeURIComponent(match[1])] = decodeURIComponent(match[2]);
+        }
+        const hash = window.location.hash.substring(1);
+        if (hash) {
+            const hashParams = new URLSearchParams(hash);
+            for (const [key, value] of hashParams) {
+                params[key] = value;
+            }
+        }
+        return params;
+    }
+
+    // 页面加载逻辑
+    document.addEventListener('DOMContentLoaded', function () {
+        const params = getUrlParams();
+        let username = '未验证用户';
+        let loginMethod = 'email';
+        let authDetails = '';
+
+        if (params.username) {
+            username = `User_${generateRandomID()}`;
+            loginMethod = 'email';
+            authDetails = `<p>验证方式: <strong>用户名/邮箱</strong></p><p>用户名: <strong>${username}</strong></p>`;
+        } else if (params.code) {
+            username = `User_${generateRandomID()}`;
+            loginMethod = 'github';
+            authDetails = `<p>验证方式: <strong>GitHub OAuth</strong></p><p>验证码: <code class="code">${params.code}</code></p><p>用户名: <strong>${username}</strong></p>`;
+        } else if (params.state) {
+            username = `User_${generateRandomID()}`;
+            loginMethod = 'google';
+            authDetails = `<p>验证方式: <strong>Google OAuth</strong></p><p>状态码: <code class="code">${params.state}</code></p><p>用户名: <strong>${username}</strong></p>`;
+        } else {
+            document.getElementById('authInfo').innerHTML = `
+                <p style="color: var(--danger);"><i class="fas fa-exclamation-circle"></i> 错误：未提供验证信息</p>
+                <p>此页面需要用户验证信息才能访问。请通过以下方式访问：</p>
+                <ul style="margin-top: 10px; padding-left: 20px;">
+                    <li>使用用户名登录：<code>dashboard.html?username=your_username</code></li>
+                    <li>使用GitHub登录：<code>dashboard.html?code=github_auth_code</code></li>
+                    <li>使用Google登录：<code>dashboard.html#state=google_state_code</code></li>
+                </ul>
+                <a href="login.html" style="display: inline-block; margin-top: 15px; color: var(--primary);">
+                    <i class="fas fa-sign-in-alt"></i> 返回登录页面
+                </a>
+            `;
+        }
+
+        document.getElementById('username').textContent = username;
+        document.getElementById('authInfo').innerHTML = authDetails;
+
+        const methodElement = document.getElementById('loginMethod');
+        methodElement.className = 'login-method ' + loginMethod;
+
+        if (loginMethod === 'github') {
+            methodElement.innerHTML = '<i class="fab fa-github"></i><span>GitHub登录</span>';
+        } else if (loginMethod === 'google') {
+            methodElement.innerHTML = '<i class="fab fa-google"></i><span>Google登录</span>';
+        } else {
+            methodElement.innerHTML = '<i class="fas fa-envelope"></i><span>邮箱登录</span>';
+        }
+
+        const avatar = document.getElementById('userAvatar');
+        const initials = username.charAt(0).toUpperCase();
+        avatar.innerHTML = initials;
+
+        document.getElementById('logoutBtn').addEventListener('click', function () {
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> 退出中...';
+            this.disabled = true;
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 1000);
+        });
+
+        // 显示添加表单
+        document.getElementById('addProjectBtn')?.addEventListener('click', function () {
+            document.getElementById('newProjectForm').style.display = 'block';
+        });
+
+        // 恢复 LocalStorage 项目
+        const saved = localStorage.getItem('mbilse_user_projects');
+        if (saved) {
+            const projects = JSON.parse(saved);
+            projects.forEach(({ title, desc, status }) => {
+                const card = document.createElement('div');
+                card.className = 'project-card';
+                card.innerHTML = `
+                    <div class="project-header">
+                        <div class="project-icon"><i class="fas fa-folder-open"></i></div>
+                        <h3 class="project-title">${title}</h3>
+                    </div>
+                    <p class="project-desc">${desc}</p>
+                    <div class="project-stats">
+                        <div class="stat-item"><i class="fas fa-code-branch"></i><span>0 提交</span></div>
+                        <div class="stat-item"><i class="${status === '运行中' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i><span>${status}</span></div>
+                    </div>
+                    <button class="btn primary-btn">管理项目</button>
+                `;
+                document.querySelector('.projects-grid').appendChild(card);
+            });
+        }
+    });
+
+    // 添加项目函数
+    function addProject() {
+        const title = document.getElementById('projectTitle').value.trim();
+        const desc = document.getElementById('projectDesc').value.trim();
+        const status = document.getElementById('projectStatus').value;
+
+        if (!title || !desc) {
+            alert('请输入完整的项目信息！');
+            return;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'project-card';
+        card.innerHTML = `
+            <div class="project-header">
+                <div class="project-icon"><i class="fas fa-folder-open"></i></div>
+                <h3 class="project-title">${title}</h3>
+            </div>
+            <p class="project-desc">${desc}</p>
+            <div class="project-stats">
+                <div class="stat-item"><i class="fas fa-code-branch"></i><span>0 提交</span></div>
+                <div class="stat-item"><i class="${status === '运行中' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle'}"></i><span>${status}</span></div>
+            </div>
+            <button class="btn primary-btn">管理项目</button>
+        `;
+        document.querySelector('.projects-grid').appendChild(card);
+
+        document.getElementById('projectTitle').value = '';
+        document.getElementById('projectDesc').value = '';
+        document.getElementById('projectStatus').value = '运行中';
+        document.getElementById('newProjectForm').style.display = 'none';
+
+        saveProjectsToLocalStorage();
+    }
+
+    // 保存项目到 LocalStorage
+    function saveProjectsToLocalStorage() {
+        const projects = [];
+        document.querySelectorAll('.project-card').forEach(card => {
+            const title = card.querySelector('.project-title')?.textContent || '';
+            const desc = card.querySelector('.project-desc')?.textContent || '';
+            const status = card.querySelector('.project-stats .stat-item:nth-child(2) span')?.textContent || '';
+            projects.push({ title, desc, status });
+        });
+        localStorage.setItem('mbilse_user_projects', JSON.stringify(projects));
+    }
+    </script>
+</body>
+</html>
