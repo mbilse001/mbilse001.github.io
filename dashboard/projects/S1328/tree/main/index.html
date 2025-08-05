@@ -951,7 +951,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (confirmText === '企业官网') {
                     alert('项目已删除！正在返回仪表盘...');
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
+                        window.location.href = '/dashboard/';
                     }, 1000);
                 } else {
                     alert('项目名称不匹配，请重新输入！');
@@ -1002,7 +1002,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 this.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
                 this.disabled = true;
                 setTimeout(() => {
-                    window.location.href = 'login.html';
+                    window.location.href = '/login.html';
                 }, 1000);
             });
         });
