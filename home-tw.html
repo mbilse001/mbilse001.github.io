@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.7">
+    <title>Mbilse Care - 隨處構建，部署，連接和使用</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft JhengHei', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #00c9ff;
+            --secondary: #3a86ff;
+            --accent: #ff006e;
+            --dark: #0d1117;
+            --darker: #090c10;
+            --light: #f0f6fc;
+            --gray: #8b949e;
+            --card-bg: rgba(13, 17, 23, 0.8);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--darker) 0%, var(--dark) 100%);
+            color: var(--light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 粒子背景 */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* 導航欄 */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(13, 17, 23, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 25px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--light);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--primary);
+        }
+
+        .nav-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 201, 255, 0.4);
+        }
+
+        .menu-dots {
+            display: flex;
+            gap: 8px;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .dot {
+            width: 4px;
+            height: 4px;
+            background: var(--light);
+            border-radius: 50%;
+        }
+
+        .dropdown {
+            position: relative;
+        }
+
+        .dropdown-content {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 15px;
+            width: 250px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 200;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content h3 {
+            font-size: 1rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            padding-bottom: 10px;
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px 10px 40px;
+            border-radius: 30px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            font-size: 0.9rem;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .lang-select {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--light);
+            margin-bottom: 15px;
+            cursor: pointer;
+        }
+
+        .dropdown-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .dropdown-links a {
+            color: var(--light);
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .dropdown-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-links a i {
+            width: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        /* 主內容區域 */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 100px 5% 150px;
+            position: relative;
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            max-width: 900px;
+            background: linear-gradient(to right, var(--light), var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.5rem;
+            max-width: 700px;
+            margin-bottom: 40px;
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .primary-btn {
+            background: var(--primary);
+            color: var(--dark);
+            border: 2px solid var(--primary);
+        }
+
+        .primary-btn:hover {
+            background: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 201, 255, 0.3);
+        }
+
+        .secondary-btn {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--gray);
+        }
+
+        .secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* 特性部分 */
+        .features {
+            padding: 80px 5%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            position: relative;
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--primary);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            border-color: rgba(0, 201, 255, 0.3);
+        }
+
+        .feature-card:before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), transparent, var(--secondary));
+            z-index: -1;
+            border-radius: 16px;
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 201, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--light);
+        }
+
+        .feature-desc {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* 統計部分 */
+        .stats {
+            padding: 100px 5%;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            margin: 80px auto;
+            max-width: 1200px;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--gray);
+        }
+
+        /* 頁腳 */
+        footer {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 60px 5% 30px;
+            margin-top: 100px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column ul li a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer-column ul li a:hover {
+            color: var(--primary);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 40px;
+            margin-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* 動畫效果 */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* 響應式設計 */
+        @media (max-width: 900px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .nav-links a:not(.nav-btn) {
+                display: none;
+            }
+            
+            .dropdown-content {
+                right: -80px;
+            }
+            
+            .stat-number {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2.3rem;
+            }
+            
+            .subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+                text-align: center;
+            }
+            
+            .stats {
+                flex-direction: column;
+                align-items: center;
+                gap: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 粒子背景 -->
+    <div id="particles-js"></div>
+    
+    <!-- 導航欄 -->
+    <nav class="navbar">
+        <div class="logo">
+            <i class="fas fa-cloud"></i>
+            <span>Mbilse Care</span>
+        </div>
+        
+        <div class="nav-links">
+            <a href="#products">產品</a>
+            <a href="#solutions">解決方案</a>
+            <a href="#resources">資源</a>
+            <a href="#pricing">定價</a>
+            
+            <div class="dropdown">
+                <div class="menu-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+                <div class="dropdown-content">
+                    <h3>導航</h3>
+                    <div class="search-box">
+                        <form action="sear.html" method="get">
+                            <i class="fas fa-search"></i>
+                            <input type="text" name="q" placeholder="搜尋..." required>
+                        </form>
+                    </div>
+                    
+                    <select class="lang-select">
+                    <option value="tw">繁體中文</option>
+                        <option value="cn">简体中文</option>
+                        
+                        <option value="en">English</option>
+                        <option value="ja">日本語</option>
+                    </select>
+                    
+                    <div class="dropdown-links">
+                        <a href="#products">
+                            <i class="fas fa-box"></i>
+                            <span>產品</span>
+                        </a>
+                        <a href="#get-started">
+                            <i class="fas fa-rocket"></i>
+                            <span>立即開始</span>
+                        </a>
+                        <a href="#overview">
+                            <i class="fas fa-chart-line"></i>
+                            <span>概覽</span>
+                        </a>
+                        <a href="#contact">
+                            <i class="fas fa-envelope"></i>
+                            <span>聯繫我們</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="nav-btn">登入</button>
+        </div>
+    </nav>
+    
+    <!-- 主內容區域 -->
+    <section class="hero">
+        <h1>隨處構建，部署，連接和使用</h1>
+        <p class="subtitle">Mbilse Care 提供全球領先的服務平台，讓開發者在任何地方都能快速構建、部署和擴展應用程式</p>
+        
+        <div class="cta-buttons">
+            <a href="#get-started" class="btn primary-btn">免費開始使用</a>
+            <a href="#contact" class="btn secondary-btn">聯繫我們</a>
+        </div>
+    </section>
+    
+    <!-- 特性部分 -->
+    <section class="features" id="overview">
+        <h2 class="section-title">我們的核心功能</h2>
+        
+        <div class="features-grid">
+            <div class="feature-card float">
+                <div class="feature-icon">
+                    <i class="fas fa-code"></i>
+                </div>
+                <h3 class="feature-title">隨處構建</h3>
+                <p class="feature-desc">在邊緣節點構建應用程式，減少延遲，提升用戶體驗。支援所有主流開發框架和語言。</p>
+            </div>
+            
+            <div class="feature-card float" style="animation-delay: 0.5s;">
+                <div class="feature-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3 class="feature-title">一鍵部署</h3>
+                <p class="feature-desc">自動化部署流程，從程式碼提交到全球部署只需幾分鐘。內建CI/CD工具鏈。</p>
+            </div>
+            
+            <div class="feature-card float" style="animation-delay: 1s;">
+                <div class="feature-icon">
+                    <i class="fas fa-plug"></i>
+                </div>
+                <h3 class="feature-title">無縫連接</h3>
+                <p class="feature-desc">全球分散式網路確保您的服務始終可用。智能路由和負載均衡優化連接路徑。</p>
+            </div>
+            
+            <div class="feature-card float" style="animation-delay: 1.5s;">
+                <div class="feature-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="feature-title">高效使用</h3>
+                <p class="feature-desc">無需付費的全免費系統模式，自動擴展資源，優化成本同時確保效能。</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 統計部分 -->
+    <div class="stats">
+        <div class="stat-item">
+            <div class="stat-number">200+</div>
+            <div class="stat-label">全球性資料中心</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">99.99%</div>
+            <div class="stat-label">服務可用性</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">5M+</div>
+            <div class="stat-label">活躍應用</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number">50ms</div>
+            <div class="stat-label">平均回應時間</div>
+        </div>
+    </div>
+    
+    <!-- 頁腳 -->
+    <footer id="contact">
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>產品</h3>
+                <ul>
+                    <li><a href="#">邊緣計算</a></li>
+                    <li><a href="#">雲端儲存</a></li>
+                    <li><a href="#">CDN加速</a></li>
+                    <li><a href="#">DDoS防護</a></li>
+                    <li><a href="#">Serverless</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>解決方案</h3>
+                <ul>
+                    <li><a href="#">網站託管</a></li>
+                    <li><a href="#">API閘道</a></li>
+                    <li><a href="#">物聯網平台</a></li>
+                    <li><a href="#">遊戲加速</a></li>
+                    <li><a href="#">影片串流服務</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>資源</h3>
+                <ul>
+                    <li><a href="#">文件</a></li>
+                    <li><a href="#">教學</a></li>
+                    <li><a href="#">部落格</a></li>
+                    <li><a href="#">社群</a></li>
+                    <li><a href="#">API參考</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>公司</h3>
+                <ul>
+                    <li><a href="#">關於我們</a></li>
+                    <li><a href="#">工作機會</a></li>
+                    <li><a href="#">合作夥伴</a></li>
+                    <li><a href="#">法律條款</a></li>
+                    <li><a href="#">聯繫我們</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            &copy; 2023 Mbilse Care Inc. 保留所有權利。
+        </div>
+    </footer>
+    
+    <!-- 粒子背景腳本 -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        // 粒子背景配置
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#00c9ff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": true,
+                        "speed": 2,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#00c9ff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1,
+                    "direction": "none",
+                    "random": true,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+        
+        // 語言切換功能
+        document.querySelector('.lang-select').addEventListener('change', function() {
+            const selectedLang = this.value;
+            let langText = "English";
+            let href = "";
+            
+            switch(selectedLang) {
+                case 'cn':
+                    langText = "简体中文";
+                    href = "index.html";
+                    break;
+                case 'tw':
+                    langText = "繁體中文";
+                    href = "tw.html";
+                    break;
+                case 'en':
+                    langText = "English";
+                    href = "en.html";
+                    break;
+                case 'ja':
+                    langText = "日本語";
+                    href = "ja.html";
+                    break;
+            }
+            
+            // 顯示通知並重定向
+            const notification = document.createElement('div');
+            notification.textContent = `語言已切換至: ${langText}`;
+            notification.style.position = 'fixed';
+            notification.style.top = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 25px';
+            notification.style.backgroundColor = 'var(--card-bg)';
+            notification.style.border = '1px solid var(--primary)';
+            notification.style.borderRadius = '8px';
+            notification.style.zIndex = '1000';
+            notification.style.boxShadow = '0 5px 15px rgba(0,0,0,0.3)';
+            notification.style.animation = 'fadeInOut 3s forwards';
+            
+            document.body.appendChild(notification);
+            
+            // 3秒後重定向
+            setTimeout(() => {
+                if(href) window.location.href = href;
+                notification.remove();
+            }, 1000);
+        });
+        
+        // 搜尋功能
+        document.querySelector('.search-box form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const searchTerm = this.querySelector('input').value;
+            if(searchTerm.trim() !== '') {
+                window.location.href = `sear.html?q=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+        
+        // 添加淡入淡出動畫
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @keyframes fadeInOut {
+                0% { opacity: 0; transform: translateY(-20px); }
+                10% { opacity: 1; transform: translateY(0); }
+                90% { opacity: 1; transform: translateY(0); }
+                100% { opacity: 0; transform: translateY(-20px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
